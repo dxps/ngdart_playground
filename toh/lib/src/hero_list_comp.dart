@@ -1,31 +1,41 @@
+import 'dart:async';
 import 'package:angular/angular.dart';
+import 'package:angular_router/angular_router.dart';
+
 import 'hero.dart';
-import 'hero_comp.dart';
 import 'hero_svc.dart';
+import 'route_paths.dart';
 
 @Component(
   selector: 'hero-list',
   templateUrl: 'hero_list_comp.html',
-  styleUrls: [ 'hero_list_comp.css'],
-  directives: [ coreDirectives, HeroComponent ],
-  providers: [ ClassProvider(HeroService) ],
+  styleUrls: ['hero_list_comp.css'],
+  directives: [coreDirectives],
+  pipes: [commonPipes],
+  providers: [ClassProvider(HeroService)],
 )
 class HeroListComponent implements OnInit {
   //
 
-  List<Hero> heroes;
-
   final HeroService _heroService;
+  final Router _router;
 
+  List<Hero> heroes;
   Hero selected;
 
-  HeroListComponent(this._heroService);
+  HeroListComponent(this._heroService, this._router);
+
+  Future<NavigationResult> gotoDetail() => _router.navigate(
+        RoutePaths.hero.toUrl(
+          parameters: {idParam: '${selected.id}'},
+        ),
+      );
 
   @override
   void ngOnInit() => _getHeroes();
 
-  void _getHeroes() {
-    _heroService.getAllSlowly().then((heroes) => this.heroes = heroes);
+  Future<void> _getHeroes() async {
+    heroes = await _heroService.getAll();
   }
 
   void onSelect(Hero hero) => selected = hero;

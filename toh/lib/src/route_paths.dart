@@ -19,7 +19,7 @@ class RoutePaths {
   //
 }
 
-/// Helper function that extracts the id from the RouterState.parameters map.
+/// Helper function that extracts the id from the `RouterState.parameters` map.
 int getId(Map<String, String> parameters) {
   final id = parameters[idParam];
   return id == null ? null : int.tryParse(id);
